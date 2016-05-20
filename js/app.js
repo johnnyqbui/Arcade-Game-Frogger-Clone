@@ -20,23 +20,21 @@ objectHeight = 30,
 maxObstacles = 2;
 
 // Object properties that will be inheritable
-function objectProp(x, y, width, height, sprite) {
+var objectProp = function(x, y, width, height, sprite) {
     // Location and dimension properties
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.sprite = sprite
+    this.sprite = sprite;
 };
-
 // Create all required object classes
-function Enemy(x, y, speed, width, height, sprite) {
-    objectProp.call(this,x,y,width,height,sprite)
+var Enemy = function(x, y, speed, width, height, sprite) {
+    objectProp.call(this,x,y,width,height,sprite);
     // Speed property for enemy
     this.speed = speed;
 };
-
-function Player(x, y, width, height) {
+var Player = function(x, y, width, height) {
     objectProp.call(this,x,y,width,height);
     this.sprite = 'images/good-bug.png';
     // Set previous location
@@ -46,15 +44,13 @@ function Player(x, y, width, height) {
     this.level = 1;
     this.count = 0;
 };
-
-function Obstacle(x, y, width, height, sprite)  {
+var Obstacle = function(x, y, width, height, sprite)  {
     objectProp.call(this,x,y,width,height,sprite);
 };
-
-function Item(x, y, width, height) {
-    objectProp.call(this,x,y,width,height)
+var Item = function(x, y, width, height) {
+    objectProp.call(this,x,y,width,height);
     this.sprite = 'images/Gem-Orange.png';
-}
+};
 
 Enemy.prototype = Object.create(objectProp.prototype);
 Enemy.prototype.constructor = Enemy;
@@ -65,10 +61,10 @@ Obstacle.prototype.constructor = Obstacle;
 Item.prototype = Object.create(objectProp.prototype);
 Item.prototype.constructor = Item;
 
-// Draw objects
+// Draw all objects
 objectProp.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y)
-}
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
 
 // Update the enemy's position
 // Parameter: dt, a time delta between ticks
@@ -84,14 +80,12 @@ Enemy.prototype.update = function(dt) {
         this.speed = randomSpeed();
         this.sprite = getChar();
     }
-
     // Activate black friday
     if (blackFriday) {
-        maxEnemy = 20
+        maxEnemy = 20;
     }
-
     newEnemy();
-}
+};
 
 Player.prototype.update = function() {
 // Reset player back to original position after reaching destination
@@ -102,13 +96,12 @@ Player.prototype.update = function() {
         this.y = startY;
         increaseLvl();
     };
-
     // Increase enemy speed when player reaches level 40
     if (player.level >= 40) {
-        for (i = 0; i < allEnemies.length; i++){
+        for (var i = 0; i < allEnemies.length; i++){
             allEnemies[i].speed += 1;
-        }
-    }
+        };
+    };
 };
 
 // Set keyboard handler
@@ -121,30 +114,30 @@ Player.prototype.handleInput = function(key) {
                 this.x -= 100;
                 previousX = this.x+100;
                 previousY = this.y;
-            }
+            };
             break;
         case 'right':
             if (this.x < 403) {
                 this.x += 100;
                 previousX = this.x-100;
                 previousY = this.y;
-            }
+            };
             break;
         case 'up':
             if (this.y > -25) {
                 this.y -= 83;
                 previousY = this.y+83;
                 previousX = this.x
-            }
+            };
             break;
         case 'down':
             if (this.y < 386) {
                 this.y += 83;
                 previousY = this.y-83;
                 previousX = this.x;
-            }
+            };
             break;
-        }
+        };
 };
 
 Player.prototype.collision = function() {
@@ -159,38 +152,21 @@ Player.prototype.collision = function() {
                 allItem[0].x = 100;
                 allItem[0].y = itemLocY();
             }
-            newItem();
-        }
+            else {
+                newItem()
+            }
+        };
     };
-
-    // Prevent player from going through obstacle
+    // // Prevent player from going through obstacle
     if (checkCollision(this, allObstacles)) {
         this.x = previousX;
         this.y = previousY;
     };
-
-        // Effects when player grabs item
+    // Effects when player grabs item
     if (checkCollision(this, allItem)) {
-        allItem.splice(0,1);
-
-        // Delete one obstacle if there is more than three on walkway
-        if (allObstacles.length > 5) {
-            allObstacles.splice(2,1);
-            maxObstacles--;
-        }
-        // Collect the orange gem to stop black friday stampede
-        else if (blackFriday === true) {
-            blackFriday = false;
-            maxEnemy = prevMaxEnemy;
-        }
-        // Delete enemies if there are more than seven
-        else if (allEnemies.length >= 10) {
-            maxEnemy--;
-        }
-        allEnemies.splice(7,2);
-        timeSlow();
-    }
-}
+        itemEffect();
+    };
+};
 
 Obstacle.prototype.collision = function() {
     // Place obstacle in different location if one already exists there
@@ -200,7 +176,7 @@ Obstacle.prototype.collision = function() {
         ) {
         allObstacles[2].x = obstacleLocX();
         allObstacles[2].y = obstacleLocY();
-    }
+    };
 
     // Place item in different area if an obstacle is in the way
     if (allItem.length > 0
@@ -210,8 +186,8 @@ Obstacle.prototype.collision = function() {
         && (allItem[0].y + allItem[0].height) > this.y) {
         allItem[0].x = itemLocX;
         allItem[0].y = itemLocY;
-    }
-}
+    };
+};
 
 // Check if player collide with any enemies or obstacles
 var checkCollision = function(player, object) {
@@ -225,95 +201,136 @@ var checkCollision = function(player, object) {
             return true;
         };
     };
-}
+};
 
-// Increase difficulty as level increases and randomize obstacles and item location
+// Level increase effects
 var increaseLvl = function() {
-    // Ensures speed and enemy increases at same level
-    if (player.level%3 === 0 && player.level%4 === 0) {
+    // Enemy increases every 3 levels
+    if (player.level%3 === 0) {
         maxEnemy++;
+    }
+    // Speed increases every 4 levels
+    if (player.level%4 === 0) {
         minSpeed += 0.2;
         maxSpeed += 0.2;
     }
-    else if (player.level%3 === 0 && player.level%5 === 0) {
-        maxEnemy++;
+    // Number of obstacles increases every 5 levels
+    if (player.level%5 === 0) {
         maxObstacles++;
     }
-    // Enemy increases
-    else if (player.level%3 === 0) {
-        maxEnemy++;
-    }
-    // Speed increases
-    else if (player.level%4 === 0) {
-        minSpeed += 0.2;
-        maxSpeed += 0.2;
-    }
-    // Number of obstacles increases
-    else if (player.level%5 === 0) {
-        maxObstacles++;
-    }
-
-    // Rock and bush randomizes on the grass
-        allObstacles[0].y = obstacleLocY();
-        allObstacles[0].sprite = getObstacle(1);
-
     // Randomize obstacles after player reaches destination
     for (var i = 2; i < allObstacles.length; i++) {
         allObstacles[i].x = obstacleLocX();
         allObstacles[i].y = obstacleLocY();
-        allObstacles[i].sprite = getObstacle(0);
+        allObstacles[i].sprite = getObstacle('trash');
     }
-
-    // Enable black friday stampede when player reaches level 25
-    if (player.level === 25) {
-        blackFriday = true
-        prevMaxEnemy = maxEnemy
-    }
-
     // Delete item if it hasn't been picked up
     if (allItem.length > 0) {
-        allItem.splice(0,1)
+        allItem.splice(0,1);
     }
-
+    // Enable black friday stampede when player reaches level 25
+    if (player.level === 25) {
+        blackFriday = true;
+        prevMaxEnemy = maxEnemy;
+    }
+    // Rock and bush randomizes on the grass
+    allObstacles[0].y = obstacleLocY();
+    allObstacles[0].sprite = getObstacle('grass');
     // Spawn item, enemy, and obstacle when level increases
     getItem();
     newEnemy();
     newObstacle();
-}
-
-// Randomize number for enemy speed
-var randomSpeed = function() {
-    number = Math.random()*maxSpeed+minSpeed;
-    return number;
 };
 
+// Instantiate objects
+var allEnemies = [new Enemy(randomCol(),enemyY,randomSpeed(),enemyWidth,enemyHeight,getChar()),
+                new Enemy(randomCol(),enemyY,randomSpeed(),enemyWidth,enemyHeight,getChar())];
+var player = new Player(startX,startY,70,50);
+var allObstacles = [new Obstacle(100,obstacleLocY(),objectWidth,objectHeight,getObstacle('grass')),
+                    new Obstacle(0,390,objectWidth,objectHeight,'images/Tree Tall.png')];
+var allItem = [new Item(itemLocX(),itemLocY(),objectWidth,objectHeight)];
+
+// Create new enemy and push to array when maxEnemy increases
+function newEnemy() {
+    if (allEnemies.length < maxEnemy) {
+        var enemy = new Enemy(randomCol(),enemyY,randomSpeed(),enemyWidth,enemyHeight,getChar());
+        allEnemies.push(enemy);
+        };
+    }
+
+// Create new obstacle and push to array when maxObstacle increases
+function newObstacle() {
+    if (allObstacles.length < maxObstacles) {
+        var obstacle = new Obstacle(obstacleLocX(),obstacleLocY(),objectWidth,objectHeight,getObstacle('trash'));
+        allObstacles.push(obstacle);
+        };
+    }
+
+// Create new item and push to array to be called
+function newItem() {
+    if (allItem.length < 1) {
+        var item = new Item(itemLocX(),itemLocY(),objectWidth,objectHeight);
+        allItem.push(item);
+    };
+}
+
+// Get random Enemy sprite
+function getChar() {
+    var char = Math.floor(Math.random()*5);
+    var allChar = ['images/char-boy.png',
+        'images/char-horn-girl.png',
+        'images/char-cat-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png'];
+    return allChar[char];
+}
+// Randomize number for enemy speed
+function randomSpeed() {
+    var number = Math.random()*maxSpeed+minSpeed;
+    return number;
+};
 // Randomize enemy spawn columns
-var randomCol =  function() {
-    number = Math.ceil(Math.random()*9);
+function randomCol() {
+    var number = Math.ceil(Math.random()*9);
     if (number <= 3) {
         return 203;
     } else if (number > 3 && number <= 6) {
         return 303;
     } else if (number > 6) {
         return 403;
-    }
+    };
 }
 
+// Get random Obstacle sprite
+function getObstacle(object) {
+    if (object === 'grass') {
+        var obstacle = Math.floor(Math.random()*2);
+        var otherObs = ['images/Rock.png',
+        'images/Tree Ugly.png'];
+        return otherObs[obstacle];
+    }
+    else if (object === 'trash') {
+        var obstacle = Math.floor(Math.random()*3);
+        var allObs = ['images/banana.png',
+        'images/paper.png',
+        'images/newspaper.png'];
+        return allObs[obstacle];
+    };
+}
 // Randomizes obstacle X location
-var obstacleLocX = function() {
-    number = Math.floor(Math.random()*3)+1
+function obstacleLocX() {
+    var number = Math.floor(Math.random()*3)+1;
     if (number === 1) {
         return 200;
     } else if (number === 2) {
         return 300;
     } else if (number === 3) {
         return 400;
-    }
+    };
 }
-
 // Randomizes obstacle Y location
-var obstacleLocY = function() {
-    number = Math.floor(Math.random()*5)+1
+function obstacleLocY() {
+    var number = Math.floor(Math.random()*5)+1;
     if (number === 1) {
         return 58;
     } else if (number === 2) {
@@ -324,12 +341,20 @@ var obstacleLocY = function() {
         return 307;
     } else if (number === 5) {
         return 390;
-    }
+    };
 }
 
+// Item randomly spawns when player reaches destination
+function getItem() {
+    var variable = player.level/75;
+    var num = Math.random()+variable;
+    if (num > 0.8) {
+        newItem();
+    };
+}
 // Randomizes item X location
-var itemLocX = function() {
-    number = Math.floor(Math.random()*5)+1
+function itemLocX() {
+    var number = Math.floor(Math.random()*5)+1;
     if (number === 1) {
         return 0;
     } else if (number === 2) {
@@ -340,12 +365,11 @@ var itemLocX = function() {
         return 300;
     } else if (number === 5) {
         return 400;
-    }
+    };
 }
-
 // Randomizes item Y location
-var itemLocY = function() {
-    number = Math.floor(Math.random()*6)+1
+function itemLocY() {
+    var number = Math.floor(Math.random()*6)+1;
     if (number === 1) {
         return -25;
     } else if (number === 2) {
@@ -360,82 +384,31 @@ var itemLocY = function() {
         return 390;
     }
 }
-
-// Get random Enemy sprite
-var getChar = function() {
-    var char = Math.floor(Math.random()*5);
-    allChar = ['images/char-boy.png',
-        'images/char-horn-girl.png',
-        'images/char-cat-girl.png',
-        'images/char-pink-girl.png',
-        'images/char-princess-girl.png'];
-    return allChar[char]
+function itemEffect() {
+    // Delete an obstacle when more than 3 is present on walkway.
+    if (allObstacles.length > 5) {
+        allObstacles.splice(2,1);
+        maxObstacles--;
+    };
+    // Delete enemies when amount is more than 10
+    if (allEnemies.length > 10) {
+        maxEnemy--;
+    };
+    // Stop Black Friday Stampede
+    if (blackFriday === true) {
+        blackFriday = false;
+        maxEnemy = prevMaxEnemy;
+    };
+    // Default item effect
+    allItem.splice(0,1);
+    allEnemies.splice(8,2);
+    timeSlow();
 }
-
-// Get random Obstacle sprite
-var getObstacle = function(num) {
-    if (num === 0) {
-    var obstacle = Math.floor(Math.random()*3);
-    allObs = ['images/banana.png',
-        'images/paper.png',
-        'images/newspaper.png'];
-        return allObs[obstacle]
-    }
-
-    if (num === 1) {
-    obstacle = Math.floor(Math.random()*2);
-        otherObs = ['images/Rock.png',
-        'images/Tree Ugly.png'];
-        return otherObs[obstacle]
-    }
-}
-
-// Item randomly spawns when player reaches destination
-var getItem = function() {
-    variable = player.level/75
-    var num = Math.random()+variable;
-    if (num > 0.8) {
-        newItem();
-    }
-}
-
-// Create new objects
-var allEnemies = [new Enemy(randomCol(),enemyY,randomSpeed(),enemyWidth,enemyHeight,getChar()),
-                new Enemy(randomCol(),enemyY,randomSpeed(),enemyWidth,enemyHeight,getChar())];
-var player = new Player(startX,startY,70,50);
-var allObstacles = [new Obstacle(100,obstacleLocY(),objectWidth,objectHeight,getObstacle(1)),
-                    new Obstacle(0,390,objectWidth,objectHeight,'images/Tree Tall.png')]
-var allItem = [new Item(itemLocX(),itemLocY(),objectWidth,objectHeight)];
-
-// Create new enemy and push to array when maxEnemy increases
-var newEnemy = function() {
-    if (allEnemies.length < maxEnemy) {
-        var enemy = new Enemy(randomCol(),enemyY,randomSpeed(),enemyWidth,enemyHeight,getChar());
-        allEnemies.push(enemy);
-        }
-    }
-
-// Create new obstacle and push to array when maxObstacle increases
-var newObstacle = function() {
-    if (allObstacles.length < maxObstacles) {
-        var obstacle = new Obstacle(obstacleLocX(),obstacleLocY(),objectWidth,objectHeight,getObstacle(0));
-        allObstacles.push(obstacle);
-        }
-    }
-
-// Create new item and push to array to be called
-var newItem = function() {
-    if (allItem.length < 1) {
-        var item = new Item(itemLocX(),itemLocY(),objectWidth,objectHeight);
-        allItem.push(item);
-    }
-}
-
 // Slow enemies down temporarily
-var timeSlow = function() {
-    for (i = 0; i < allEnemies.length; i++) {
+function timeSlow() {
+    for (var i = 0; i < allEnemies.length; i++) {
         allEnemies[i].speed = 0.7;
-    }
+    };
 }
 
 // This listens for key presses and sends the keys to your
@@ -447,6 +420,5 @@ document.addEventListener('keydown', function(e) {
         39: 'right',
         40: 'down'
     };
-
    player.handleInput(allowedKeys[e.keyCode]);
 });
