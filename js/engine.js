@@ -13,7 +13,6 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -25,13 +24,30 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 505;
+    canvas.width = 606;
     canvas.height = 606;
+    ctx.translate(0,20)
     doc.body.appendChild(canvas);
-
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
+    var counter = 0;
+    function getRandomBgColor() {
+        var colors = ['#00016B','#9E8B00','#871000','#350006']
+        var getColor = Math.floor(Math.random() * 4);
+        return colors[getColor];
+    }
+
+    function activate() {
+        document.body.style.backgroundColor = getRandomBgColor();
+    }
+
+    function changeBgColor() {
+            setInterval(function() {
+                activate();
+        }, 50)
+    }
+
     function main() {
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
@@ -57,6 +73,7 @@ var Engine = (function(global) {
          * function again as soon as the browser is able to draw another frame.
          */
         win.requestAnimationFrame(main);
+
     }
 
     /* This function does some initial setup that should only occur once,
@@ -80,7 +97,6 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -95,6 +111,10 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        player.collision();
+        allObstacles.forEach(function(obstacle) {
+            obstacle.collision();
+        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -107,16 +127,17 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+        ctx.clearRect(0,-20,canvas.width, canvas.height)
+        var colImages = [
+                'images/grass-block.png',   // Left Col is grass
+                'images/grass-block.png',   // Col 2 of 6 of grass
+                'images/stone-block.png',   // Col 3 of 6 of stone
+                'images/stone-block.png',   // Col 4 of 6 of stone
+                'images/stone-block.png',   // Col 5 of 6 of stone
+                'images/water-block.png'    // Col 6 of 6 of water
             ],
             numRows = 6,
-            numCols = 5,
+            numCols = 6,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -132,11 +153,72 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(colImages[col]), col * 101, row * 83);
             }
         }
-
         renderEntities();
+
+        function getRandomColor() {
+            var colors = ['#14EA2A','#051BF9','#BB39AE','#FF6F00','#CC000A','#FFFA00']
+            var getColor = Math.floor(Math.random() * 6);
+            return colors[getColor];
+            }
+
+        ctx.fillText("Level: " + player.level, 10, 35)
+        ctx.font = "25px Comic Sans MS"
+        if (player.level < 5) {
+            ctx.fillText("Difficulty: EASY", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = "#35D32B"
+        } else if (player.level < 10) {
+            ctx.fillText("Difficulty: MEDIUM", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = '#3B68C3'
+        } else if (player.level < 15) {
+            ctx.fillText("Difficulty: HARD", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = '#BB39AE'
+        } else if (player.level < 20) {
+            ctx.fillText("Difficulty: VERY HARD", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = '#EC6F12'
+        } else if (player.level < 25) {
+            ctx.fillText("Difficulty: CHAOS", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = '#CC000A'
+        } else if (player.level < 30) {
+            ctx.fillText("Difficulty: BLACK FRIDAY SHOPPERS!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = getRandomColor(1)
+        } else if (player.level < 35) {
+            ctx.fillText("YOU WIN!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = '#FF000A'
+        } else if (player.level === 35) {
+            ctx.fillText("YOU CAN STOP NOW! OK? YOU WON!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+        } else if (player.level === 36) {
+            ctx.fillText("STOP NOW!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+        } else if (player.level === 37) {
+            ctx.fillText("DON'T YOU DARE GO ANY FURTHER!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+        } else if (player.level === 38) {
+            ctx.fillText("LAST CHANCE! I'M WARNING YOU!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+        } else if (player.level === 39) {
+            ctx.fillText("YOU WILL FEEL MY WRATH!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+        } else if (player.level >= 40) {
+            ctx.font = "33px Comic Sans MS"
+            ctx.fillText("YOU SHALL NOT PASS! HAHAHAHA!", 10, 10)
+            ctx.font = "20px Comic Sans MS"
+            ctx.fillStyle = getRandomColor();
+            counter += 1
+            if (counter === 1) {
+                changeBgColor()
+            }
+        }
     }
 
     /* This function is called by the render function and is called on each game
@@ -147,11 +229,19 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
+         allItem.forEach(function(item) {
+            item.render();
         });
 
         player.render();
+
+        allObstacles.forEach(function(obstacle) {
+            obstacle.render();
+        });
+
+        allEnemies.forEach(function(enemy) {
+            enemy.render();
+        });
     }
 
     /* This function does nothing but it could have been a good place to
@@ -159,7 +249,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -170,8 +260,19 @@ var Engine = (function(global) {
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/good-bug.png',
+        'images/char-boy.png',
+        'images/char-horn-girl.png',
+        'images/char-cat-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Rock.png',
+        'images/Tree Ugly.png',
+        'images/Tree Tall.png',
+        'images/banana.png',
+        'images/paper.png',
+        'images/newspaper.png',
+        'images/Gem-Orange.png',
     ]);
     Resources.onReady(init);
 
