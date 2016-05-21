@@ -26,14 +26,15 @@ var Engine = (function(global) {
 
     canvas.width = 606;
     canvas.height = 606;
-    ctx.translate(0,20)
+    ctx.translate(0, 20);
     doc.body.appendChild(canvas);
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
     var counter = 0;
+
     function getRandomBgColor() {
-        var colors = ['#00016B','#9E8B00','#871000','#350006']
+        var colors = ['#00016B', '#9E8B00', '#871000', '#350006'];
         var getColor = Math.floor(Math.random() * 4);
         return colors[getColor];
     }
@@ -43,9 +44,9 @@ var Engine = (function(global) {
     }
 
     function changeBgColor() {
-            setInterval(function() {
-                activate();
-        }, 50)
+        setInterval(function() {
+            activate();
+        }, 50);
     }
 
     function main() {
@@ -127,14 +128,14 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
-        ctx.clearRect(0,-20,canvas.width, canvas.height)
+        ctx.clearRect(0, -20, canvas.width, canvas.height);
         var colImages = [
-                'images/grass-block.png',   // Left Col is grass
-                'images/grass-block.png',   // Col 2 of 6 of grass
-                'images/stone-block.png',   // Col 3 of 6 of stone
-                'images/stone-block.png',   // Col 4 of 6 of stone
-                'images/stone-block.png',   // Col 5 of 6 of stone
-                'images/water-block.png'    // Col 6 of 6 of water
+                'images/grass-block.png', // Left Col is grass
+                'images/grass-block.png', // Col 2 of 6 of grass
+                'images/stone-block.png', // Col 3 of 6 of stone
+                'images/stone-block.png', // Col 4 of 6 of stone
+                'images/stone-block.png', // Col 5 of 6 of stone
+                'images/water-block.png' // Col 6 of 6 of water
             ],
             numRows = 6,
             numCols = 6,
@@ -159,64 +160,64 @@ var Engine = (function(global) {
         renderEntities();
 
         function getRandomColor() {
-            var colors = ['#14EA2A','#051BF9','#BB39AE','#FF6F00','#CC000A','#FFFA00']
+            var colors = ['#14EA2A', '#051BF9', '#BB39AE', '#FF6F00', '#CC000A', '#FFFA00'];
             var getColor = Math.floor(Math.random() * 6);
             return colors[getColor];
-            }
+        }
 
-        ctx.fillText("Level: " + player.level, 10, 35)
-        ctx.font = "25px Comic Sans MS"
+        ctx.fillText("Level: " + player.level, 10, 35);
+        ctx.font = "25px Comic Sans MS";
         if (player.level < 5) {
-            ctx.fillText("Difficulty: EASY", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = "#35D32B"
+            ctx.fillText("Difficulty: EASY", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = "#35D32B";
         } else if (player.level < 10) {
-            ctx.fillText("Difficulty: MEDIUM", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = '#3B68C3'
+            ctx.fillText("Difficulty: MEDIUM", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = '#3B68C3';
         } else if (player.level < 15) {
-            ctx.fillText("Difficulty: HARD", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = '#BB39AE'
+            ctx.fillText("Difficulty: HARD", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = '#BB39AE';
         } else if (player.level < 20) {
-            ctx.fillText("Difficulty: VERY HARD", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = '#EC6F12'
+            ctx.fillText("Difficulty: VERY HARD", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = '#EC6F12';
         } else if (player.level < 25) {
-            ctx.fillText("Difficulty: CHAOS", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = '#CC000A'
+            ctx.fillText("Difficulty: CHAOS", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = '#CC000A';
         } else if (player.level < 30) {
-            ctx.fillText("Difficulty: BLACK FRIDAY SHOPPERS!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = getRandomColor(1)
+            ctx.fillText("Difficulty: BLACK FRIDAY SHOPPERS!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = getRandomColor(1);
         } else if (player.level < 35) {
-            ctx.fillText("YOU WIN!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-            ctx.fillStyle = '#FF000A'
+            ctx.fillText("YOU WIN!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+            ctx.fillStyle = '#FF000A';
         } else if (player.level === 35) {
-            ctx.fillText("YOU CAN STOP NOW! OK? YOU WON!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
+            ctx.fillText("YOU CAN STOP NOW! OK? YOU WON!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
         } else if (player.level === 36) {
-            ctx.fillText("STOP NOW!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
+            ctx.fillText("STOP NOW!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
         } else if (player.level === 37) {
-            ctx.fillText("DON'T YOU DARE GO ANY FURTHER!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
+            ctx.fillText("DON'T YOU DARE GO ANY FURTHER!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
         } else if (player.level === 38) {
-            ctx.fillText("LAST CHANCE! I'M WARNING YOU!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
+            ctx.fillText("LAST CHANCE! I'M WARNING YOU!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
         } else if (player.level === 39) {
-            ctx.fillText("YOU WILL FEEL MY WRATH!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
-        } else if (player.level >= 40) {
-            ctx.font = "33px Comic Sans MS"
-            ctx.fillText("YOU SHALL NOT PASS! HAHAHAHA!", 10, 10)
-            ctx.font = "20px Comic Sans MS"
+            ctx.fillText("YOU WILL FEEL MY WRATH!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
+        } else {
+            ctx.font = "33px Comic Sans MS";
+            ctx.fillText("YOU SHALL NOT PASS! HAHAHAHA!", 10, 10);
+            ctx.font = "20px Comic Sans MS";
             ctx.fillStyle = getRandomColor();
-            counter += 1
+            counter += 1;
             if (counter === 1) {
-                changeBgColor()
+                changeBgColor();
             }
         }
     }
@@ -229,7 +230,7 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-         allItem.forEach(function(item) {
+        allItem.forEach(function(item) {
             item.render();
         });
 
