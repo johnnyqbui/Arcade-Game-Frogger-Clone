@@ -156,12 +156,12 @@ Player.prototype.collision = function() {
             }
         }
     }
-    // // Prevent player from going through obstacle
+    // Prevent player from going through obstacle
     if (checkCollision(this, allObstacles)) {
         this.x = previousX;
         this.y = previousY;
     }
-    // Effects when player grabs item
+    // Item effects when player grabs item
     if (checkCollision(this, allItem)) {
         itemEffect();
     }
@@ -233,12 +233,10 @@ var increaseLvl = function() {
 
 // Instantiate objects
 var allEnemies = [new Enemy(randomCol(), enemyY, randomSpeed(), enemyWidth, enemyHeight, getChar()),
-    new Enemy(randomCol(), enemyY, randomSpeed(), enemyWidth, enemyHeight, getChar())
-];
+                new Enemy(randomCol(), enemyY, randomSpeed(), enemyWidth, enemyHeight, getChar())];
 var player = new Player(startX, startY, 70, 50);
 var allObstacles = [new Obstacle(100, obstacleLocY(), objectWidth, objectHeight, getObstacle('grass')),
-    new Obstacle(0, 390, objectWidth, objectHeight, 'images/Tree Tall.png')
-];
+                    new Obstacle(0, 390, objectWidth, objectHeight, 'images/Tree Tall.png')];
 var allItem = [new Item(itemLocX(), itemLocY(), objectWidth, objectHeight)];
 
 // Create new enemy and push to array when maxEnemy increases
@@ -295,12 +293,14 @@ function randomCol() {
 
 // Get random Obstacle sprite
 function getObstacle(object) {
+    // Call random obstacles on grass
     if (object === 'grass') {
         obstacle = Math.floor(Math.random() * 2);
         var otherObs = ['images/Rock.png',
             'images/Tree Ugly.png'
         ];
         return otherObs[obstacle];
+    // Call random obstacles on walkway
     } else if (object === 'trash') {
         obstacle = Math.floor(Math.random() * 3);
         var allObs = ['images/banana.png',

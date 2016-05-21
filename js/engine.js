@@ -31,18 +31,23 @@ var Engine = (function(global) {
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
+
+     // Counter for changing background color
     var counter = 0;
 
+    // Function to Change background color
     function getRandomBgColor() {
         var colors = ['#00016B', '#9E8B00', '#871000', '#350006'];
         var getColor = Math.floor(Math.random() * 4);
         return colors[getColor];
     }
 
+    // Used in conjunction with change background color
     function activate() {
         document.body.style.backgroundColor = getRandomBgColor();
     }
 
+    // Set interval to change color
     function changeBgColor() {
         setInterval(function() {
             activate();
@@ -159,12 +164,14 @@ var Engine = (function(global) {
         }
         renderEntities();
 
+        // Create random colors
         function getRandomColor() {
             var colors = ['#14EA2A', '#051BF9', '#BB39AE', '#FF6F00', '#CC000A', '#FFFA00'];
             var getColor = Math.floor(Math.random() * 6);
             return colors[getColor];
         }
 
+        // Text change when level increases
         ctx.fillText("Level: " + player.level, 10, 35);
         ctx.font = "25px Comic Sans MS";
         if (player.level < 5) {
@@ -190,6 +197,7 @@ var Engine = (function(global) {
         } else if (player.level < 30) {
             ctx.fillText("Difficulty: BLACK FRIDAY SHOPPERS!", 10, 10);
             ctx.font = "20px Comic Sans MS";
+            // Random colors for text
             ctx.fillStyle = getRandomColor(1);
         } else if (player.level < 35) {
             ctx.fillText("YOU WIN!", 10, 10);
@@ -214,9 +222,11 @@ var Engine = (function(global) {
             ctx.font = "33px Comic Sans MS";
             ctx.fillText("YOU SHALL NOT PASS! HAHAHAHA!", 10, 10);
             ctx.font = "20px Comic Sans MS";
+            // Random colors for text
             ctx.fillStyle = getRandomColor();
             counter += 1;
             if (counter === 1) {
+                // Random colors for background
                 changeBgColor();
             }
         }
