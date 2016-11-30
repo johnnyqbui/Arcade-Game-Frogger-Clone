@@ -412,5 +412,3 @@ document.addEventListener('keydown', function(e) {
     };
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
-console.log(player)
