@@ -53,13 +53,9 @@ var Item = function(x, y, width, height) {
 };
 
 Enemy.prototype = Object.create(objectProp.prototype);
-Enemy.prototype.constructor = Enemy;
 Player.prototype = Object.create(objectProp.prototype);
-Player.prototype.constructor = Player;
 Obstacle.prototype = Object.create(objectProp.prototype);
-Obstacle.prototype.constructor = Obstacle;
 Item.prototype = Object.create(objectProp.prototype);
-Item.prototype.constructor = Item;
 
 // Draw all objects
 objectProp.prototype.render = function() {
